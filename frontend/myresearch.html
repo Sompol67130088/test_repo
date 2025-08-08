@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <title>แนวทางการวิจัย</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    iframe { width: 100%; height: 500px; border: 1px solid #ccc; margin-bottom: 20px; }
+    input, button, textarea { margin: 5px 0; width: 100%; }
+    .ref-item { border-bottom: 1px solid #ddd; padding: 10px 0; }
+    .ref-title { font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h1>แนวทางการวิจัยของนักศึกษา</h1>
+  <p>งานวิจัยนี้เน้นการประยุกต์ใช้เทคโนโลยี Wi-Fi sensing ร่วมกับอัลกอริธึม SVM เพื่อวิเคราะห์พฤติกรรมการเคลื่อนไหวในพื้นที่ต่าง ๆ โดยมีการติดตั้งเซนเซอร์และเก็บข้อมูล RSSI สำหรับการแยกแยะกิจกรรมแบบไม่รุกรุก</p>
+ 
+  <h2>📚 PDF งานวิจัยสรุป</h2>
+  <iframe src="https://example.com/myresearch-summary.pdf" title="PDF วิจัย"></iframe>
+ 
+  <h2>📖 รายการอ้างอิง (IEEE Style)</h2>
+  <div id="ref-list"></div>
+ 
+  <h3>➕ เพิ่มรายการอ้างอิง</h3>
+  <input type="text" id="title" placeholder="ชื่อเพเพอร์ตาม IEEE" />
+  <input type="text" id="pdf_url" placeholder="ลิงก์ไฟล์ PDF หรือ URL" />
+  <button onclick="addReference()">เพิ่มอ้างอิง</button>
+ 
+  <script>
+    const api = "http://localhost:3000/references";
+ 
+    async function fetchReferences() {
+      try {
+        const res = await fetch(api);
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        const refs = await res.json();
+        const container = document.getElementById("ref-list");
+        container.innerHTML = "";
+        refs.forEach(ref => {
+          const div = document.createElement("div");
+          div.className = "ref-item";
+          div.innerHTML = `
+            <div class="ref-title">${ref.title}</div>
+            <a href="${ref.pdf_url}" target="_blank">ดู PDF</a><br/>
+            <button onclick="editReference(${ref.id})">แก้ไข</button>
+            <button onclick="deleteReference(${ref.id})">ลบ</button>
+          `;
+          container.appendChild(div);
+        });
+      } catch (error) {
+        console.error("Failed to fetch references:", error);
+        // Display an error message to the user in the UI
+        const container = document.getElementById("ref-list");
+        container.innerHTML = "<p>Failed to load references. Please try again later.</p>";
+      }
+    }
+ 
+    async function addReference() {
+      const title = document.getElementById("title").value;
+      const pdf_url = document.getElementById("pdf_url").value;
+      if (title && pdf_url) {
+        await fetch(api, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ title, pdf_url })
+        });
+        fetchReferences();
+      }
+    }
+    
+    async function deleteReference(id) {
+      if (confirm("คุณแน่ใจหรือว่าต้องการลบรายการนี้?")) {
+        await fetch(`${api}/${id}`, { method: "DELETE" });
+        fetchReferences();
+      }
+    }
+ 
+    fetchReferences();
+  </script>
+</body>
+</html>
