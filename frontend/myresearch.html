@@ -14,21 +14,21 @@
 <body>
   <h1>แนวทางการวิจัยของนักศึกษา</h1>
   <p>งานวิจัยนี้เน้นการประยุกต์ใช้เทคโนโลยี Wi-Fi sensing ร่วมกับอัลกอริธึม SVM เพื่อวิเคราะห์พฤติกรรมการเคลื่อนไหวในพื้นที่ต่าง ๆ โดยมีการติดตั้งเซนเซอร์และเก็บข้อมูล RSSI สำหรับการแยกแยะกิจกรรมแบบไม่รุกรุก</p>
- 
+
   <h2>📚 PDF งานวิจัยสรุป</h2>
   <iframe src="https://example.com/myresearch-summary.pdf" title="PDF วิจัย"></iframe>
- 
+
   <h2>📖 รายการอ้างอิง (IEEE Style)</h2>
   <div id="ref-list"></div>
- 
+
   <h3>➕ เพิ่มรายการอ้างอิง</h3>
   <input type="text" id="title" placeholder="ชื่อเพเพอร์ตาม IEEE" />
   <input type="text" id="pdf_url" placeholder="ลิงก์ไฟล์ PDF หรือ URL" />
   <button onclick="addReference()">เพิ่มอ้างอิง</button>
- 
+
   <script>
-    const api = "http://localhost:3000/references";
- 
+    const api = "http://65.0.131.65:3000/references";
+
     async function fetchReferences() {
       try {
         const res = await fetch(api);
@@ -56,7 +56,7 @@
         container.innerHTML = "<p>Failed to load references. Please try again later.</p>";
       }
     }
- 
+
     async function addReference() {
       const title = document.getElementById("title").value;
       const pdf_url = document.getElementById("pdf_url").value;
@@ -69,14 +69,14 @@
         fetchReferences();
       }
     }
-    
+
     async function deleteReference(id) {
       if (confirm("คุณแน่ใจหรือว่าต้องการลบรายการนี้?")) {
         await fetch(`${api}/${id}`, { method: "DELETE" });
         fetchReferences();
       }
     }
- 
+
     fetchReferences();
   </script>
 </body>
